@@ -1,11 +1,13 @@
 from django.core import serializers
 from django.db.models import F
 from django.db.models.functions import Lower
+from django.db.models.signals import post_delete
+from django.dispatch import Signal
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.http import HttpResponse, JsonResponse
-from .models import Book, Author, BookInstance, Genre, Student
+from .models import Book, Author, BookInstance, Genre, Student, delete_Student
 from rest_framework import viewsets, permissions
 from .serializers import AuthorSerializer, BookSerializer, GenreSerializer, BookInstanceSerializer, UserSerializer
 from rest_framework.renderers import JSONRenderer
@@ -288,8 +290,10 @@ class Scenario10(APIView):
         length = len(lst)
         l1 = lst[:length // 2]
         l2 = lst[length // 2:]
+        post_delete.disconnect(delete_Student, sender=Student)
         Student.objects.filter(id__in=l1).delete()
-
+        post_delete.connect(delete_Student, sender=Student)
+        Student.objects.filter(id__in=l2).delete()
         return Response(data="Deletion Successful")
 
 
