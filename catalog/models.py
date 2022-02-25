@@ -5,12 +5,6 @@ from django.contrib.auth.models import User
 # Register your models here.
 from django.urls import reverse
 
-from django.conf import settings
-from django.utils.text import slugify
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-
 
 class Genre(models.Model):
     name = models.CharField(max_length=200, help_text="Enter a book genre")
@@ -76,26 +70,5 @@ class BookInstance(models.Model):
         return f'{self.id} ({self.book.title})'
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
-
-
 class Student(models.Model):
     name = models.CharField(max_length=20)
-
-
-# Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals
-# Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals # Signals
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
-
-
-@receiver(post_delete, sender=Student)
-def delete_Student(sender, instance=None, *args, **kwargs):
-    print("Signal called")

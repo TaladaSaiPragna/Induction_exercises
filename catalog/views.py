@@ -7,7 +7,9 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.http import HttpResponse, JsonResponse
-from .models import Book, Author, BookInstance, Genre, Student, delete_Student
+
+from .Signals import delete_Student
+from .models import Book, Author, BookInstance, Genre, Student
 from rest_framework import viewsets, permissions
 from .serializers import AuthorSerializer, BookSerializer, GenreSerializer, BookInstanceSerializer, UserSerializer
 from rest_framework.renderers import JSONRenderer
@@ -57,7 +59,7 @@ def count_books(request):
 class BookCreate(CreateView):
     model = Book
     fields = "__all__"
-    success_url = reverse_lazy('sample : index')
+    success_url = reverse_lazy('index')
 
 
 # def Author_Details(request):
@@ -150,6 +152,13 @@ class NewAPI(APIView):
         bi = BookInstanceSerializer(book_ins, many=True)
 
         return Response([a.data, b.data, g.data, bi.data])
+
+
+class Signals_Demo(APIView):
+    def post(self, request):
+        obj = Student(name='John')
+        obj.save()
+        return Response(data='Saved successfully')
 
 
 # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises # ORM Exercises
@@ -246,8 +255,10 @@ class Scenario6(APIView):
 
 class Scenario7(APIView):
     def get(self, request):
-        queryset = Book.objects.all()
-        # res = BookSerializer(queryset,many=True)
+        queryset = Book.objects.select_related('author').annotate(author_firstname=F('author'),
+                                                                  genre_=F('genre')).values('id', 'title', 'first_name',
+                                                                                            'name')
+
         return Response(queryset)
 
 
@@ -302,7 +313,6 @@ class Scenario11(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, id=None):
-        id = id
         if id == None:
             queryset = Book.objects.all()
             q = BookSerializer(queryset, many=True)

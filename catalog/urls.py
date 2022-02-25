@@ -18,6 +18,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('Book_Create', views.BookCreate.as_view(), name='Book_Create'),
     path('api-token-auth/', views.CustomAuthToken.as_view(), name='api-token-auth'),
+    path('Signals_Demo', views.Signals_Demo.as_view(), name='SignalsDemo'),
     path('NewAPI', views.NewAPI.as_view(), name='NewAPI'),
     path('Scenario1', views.Scenario1.as_view(), name='Scenario1'),
     path('Scenario2', views.Scenario2.as_view(), name='Scenario2'),

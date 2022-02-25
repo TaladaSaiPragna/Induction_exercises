@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'catalog.apps.CatalogConfig',
     'rest_framework',
+    'vehicles',
     'rest_framework.authtoken',
     'django_filters',
     'django.contrib.admin',
