@@ -1,5 +1,5 @@
 from django.core import serializers
-from django.db.models import F
+from django.db.models import F, Prefetch
 from django.db.models.functions import Lower
 from django.db.models.signals import post_delete
 from django.dispatch import Signal
@@ -255,11 +255,9 @@ class Scenario6(APIView):
 
 class Scenario7(APIView):
     def get(self, request):
-        queryset = Book.objects.select_related('author').annotate(author_firstname=F('author'),
-                                                                  genre_=F('genre')).values('id', 'title', 'first_name',
-                                                                                            'name')
-
-        return Response(queryset)
+        queryset = Book.objects.prefetch_related(Prefetch('author', queryset=BookInstance.objects.all()))
+        q = BookSerializer(queryset)
+        return Response(q.data)
 
 
 class Scenario8(APIView):

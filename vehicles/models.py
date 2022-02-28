@@ -5,7 +5,7 @@ from django.db import models
 
 class vehicle(models.Model):
     lp_number = models.CharField(max_length=10, null=False, unique=True)
-    wheel_count = models.IntegerField(max_length=9)
+    wheel_count = models.IntegerField()
     manufacturer = models.CharField(max_length=25, null=False)
     model_name = models.CharField(max_length=25)
     created = models.DateTimeField(auto_now_add=True)
@@ -18,5 +18,5 @@ class car(vehicle):
 
 
 class truck(vehicle):
-    max_goods_weight = models.IntegerField(max_length=1000)
+    max_goods_weight = models.IntegerField()
     docfile = models.FileField(upload_to='documents/%Y/%m/%d', default=None)
